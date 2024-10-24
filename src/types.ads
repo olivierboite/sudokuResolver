@@ -1,4 +1,7 @@
+--types used in this project
+
 package types is
+
    type tab_possibilite is array(1..9) of boolean;
 
    type cellule is record
@@ -9,6 +12,6 @@ package types is
 
    type ligne is array(1..9) of cellule;
    type grille is array(1..9) of ligne;
-
    sudoku : grille;
+
 end types;
