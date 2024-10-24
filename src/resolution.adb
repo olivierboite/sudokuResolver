@@ -1,4 +1,4 @@
--- RÈsolution d'une grille de SUDOKU 9*9
+-- R√©solution d'une grille de SUDOKU 9*9
 with Text_IO; use Text_IO;
 with types; use types;
 with pile;
@@ -10,18 +10,22 @@ package body resolution is
 
    pause : Character := ' ';
    copie : Grille;
-   changement : Boolean := True; --indicateur de case modifiÈe durant la boucle
+   changement : Boolean := True; --indicateur de case modifi√©e durant la boucle
    debug : Boolean; -- en mode debug, affichage sur la sortie standard
    exit_e : Exception; -- pour sortir
 
-   -- teste si le sudoku est rÈsolu
+   -- -------------------------------------------------------
+   -- teste si le sudoku est r√©solu ou non
+   -- renvoie vrai si il est non r√©solu
+   -- -------------------------------------------------------
    function non_resolu return Boolean is
-      reste_case_vide : Boolean := False; --tÈmoin de la prÈsence d'une case
+      reste_case_vide : Boolean := False; --t√©moin de la pr√©sence d'une case
                                           --encore vide
    begin
       for ligne in  1 .. 9 loop
          for col in  1 .. 9 loop
-            if sudoku (ligne) (col).valeur = 0 then
+            if sudoku (ligne) (col).valeur = 0
+            then
                reste_case_vide := True;
             end if;
          end loop;
@@ -29,21 +33,24 @@ package body resolution is
       return reste_case_vide;
    end non_resolu;
 
+   -- -------------------------------------------------------
+   -- met √† jour la liste des valeurs √† placer pour chaque case d'une ligne donn√©e
+   -- -------------------------------------------------------
    procedure resoud_ligne (ligne : Integer) is
-      -- a_placer(val) = True quand val est ‡ placer
+      -- a_placer(val) = True quand val est √† placer
       a_placer : array (1 .. 9) of Boolean := (others => True);
    begin
-      -- determine la liste des valeurs ‡ placer
+      -- determine la liste des valeurs qui restent √† placer pour cette ligne
       for col in  1 .. 9 loop
-         if not(sudoku (ligne) (col).valeur = 0) -- rÈsolu
+         if not(sudoku (ligne) (col).valeur = 0) -- r√©solu
          then
             a_placer (sudoku (ligne) (col).valeur) := False;
          end if;
       end loop;
 
-      -- affecte la liste des possibilitÈs ‡ placer ‡ chaque case
+      -- met √† jour la liste des possibilit√©s √† placer √† chaque case
       for col in  1 .. 9 loop
-         if sudoku (ligne) (col).valeur = 0 --non rÈsolu
+         if sudoku (ligne) (col).valeur = 0 --non r√©solu
          then
             for val in  1 .. 9 loop
                if not (a_placer (val)) then
@@ -54,21 +61,24 @@ package body resolution is
       end loop;
    end resoud_ligne;
 
+   -- -------------------------------------------------------
+   -- met √† jour la liste des valeurs √† placer pour chaque case d'une colonne donn√©e
+   -- -------------------------------------------------------
    procedure resoud_colonne (col : Integer) is
-      -- a_placer(val) = True quand val est ‡ placer
+      -- a_placer(val) = True quand val est √† placer
       a_placer : array (1 .. 9) of Boolean := (others => True);
    begin
-      -- determine la liste des valeurs ‡ placer
+      -- determine la liste des valeurs qui restent √† placer pour cette colonne
       for ligne in  1 .. 9 loop
-         if not (sudoku (ligne) (col).valeur = 0) -- rÈsolu
+         if not (sudoku (ligne) (col).valeur = 0) -- r√©solu
          then
             a_placer (sudoku (ligne) (col).valeur)  := False;
          end if;
       end loop;
 
-      -- affecte la liste des possibilitÈs ‡ placer ‡ chaque case
+      -- met √† jour la liste des possibilit√©s √† placer √† chaque case
       for ligne in  1 .. 9 loop
-         if sudoku (ligne) (col).valeur = 0 --non rÈsolu
+         if sudoku (ligne) (col).valeur = 0 --non r√©solu
          then
             for val in  1 .. 9 loop
                if not (a_placer (val)) then
@@ -79,24 +89,27 @@ package body resolution is
       end loop;
    end resoud_colonne;
 
+   -- -------------------------------------------------------
+   -- met √† jour la liste des valeurs √† placer pour chaque case d'un carr√© donn√©
+   -- -------------------------------------------------------
    procedure resoud_carre (ligne_d, col_d : Integer) is
-            -- a_placer(val) = True quand val est ‡ placer
+            -- a_placer(val) = True quand val est √† placer
       a_placer : array (1 .. 9) of Boolean := (others => True);
    begin
-      -- determine la liste des valeurs ‡ placer
+      -- determine la liste des valeurs qui restent √† placer pour ce carr√©
       for ligne in  ligne_d .. ligne_d + 2 loop
          for col in  col_d .. col_d + 2 loop
-            if not (sudoku (ligne) (col).valeur = 0) -- rÈsolu
+            if not (sudoku (ligne) (col).valeur = 0) -- r√©solu
             then
                a_placer (sudoku (ligne) (col).valeur)  := False;
             end if;
          end loop;
       end loop;
 
-      -- affecte la liste des possibilitÈs ‡ placer ‡ chaque case
+      -- met √† jour la liste des possibilit√©s √† placer √† chaque case
       for ligne in  ligne_d .. ligne_d + 2 loop
          for col in  col_d .. col_d + 2 loop
-            if sudoku (ligne) (col).valeur = 0 --non rÈsolu
+            if sudoku (ligne) (col).valeur = 0 --non r√©solu
             then
                for val in  1 .. 9 loop
                   if not (a_placer (val)) then
@@ -108,6 +121,9 @@ package body resolution is
       end loop;
    end resoud_carre;
 
+   -- -------------------------------------------------------
+   -- initialise la grille de d√©part 
+   -- -------------------------------------------------------
    procedure init_grille is
       continue : character := 'o';
       tmp : character;
@@ -122,6 +138,7 @@ package body resolution is
          put(Character'Image(tmp)(2..2));
       end saisie;
    begin
+      -- initialise tout √† 0
       for ligne in  1 .. 9 loop
          for col in  1 .. 9 loop
             sudoku (ligne) (col).valeur  := 0;
@@ -196,6 +213,9 @@ package body resolution is
       end loop;
    end init_grille;
 
+   -- -------------------------------------------------------
+   -- duplique sudoku dans copie
+   -- -------------------------------------------------------
    procedure duplique is
    begin
       for ligne in 1..9 loop
@@ -206,6 +226,9 @@ package body resolution is
       end loop;
    end duplique;
 
+   -- -------------------------------------------------------
+   -- duplique sudoku √† partir de copie
+   -- -------------------------------------------------------
    procedure restaure is
    begin
       for ligne in 1..9 loop
@@ -216,6 +239,9 @@ package body resolution is
       end loop;
    end restaure;
 
+   -- -------------------------------------------------------
+   -- met √† jour la liste des valeurs √† placer en examinant chaque ligne, colonne et carr√©
+   -- -------------------------------------------------------
    procedure evalue_possibilites is
    begin
       for ligne in  1 .. 9 loop
@@ -235,6 +261,9 @@ package body resolution is
       resoud_carre (7, 7);
    end evalue_possibilites;
 
+   -- -------------------------------------------------------
+   -- 
+   -- -------------------------------------------------------
    procedure resoud_possibilites is
       dernier   : Integer:=0;
       avdernier : Integer:=0;
@@ -244,34 +273,38 @@ package body resolution is
       for ligne in  1 .. 9 loop
          for col in  1 .. 9 loop
             nb_poss := 0;
-            -- Èvalue le nombre de possibilitÈ nb_poss
-            for val in  1 .. 9 loop
-               if sudoku (ligne) (col).valeur_a_placer (val) and
-                  sudoku (ligne) (col).valeur = 0
-               then
-                  nb_poss   := nb_poss + 1;
-                  avdernier := dernier;
-                  dernier   := val; --pour garder les 2 derniers
-               end if;
+            -- √©value le nombre de possibilit√© nb_poss
+            if sudoku (ligne) (col).valeur = 0 --case non remplie
+            then
+              for val in  1 .. 9 loop
+                 if sudoku (ligne) (col).valeur_a_placer (val)
+                 then
+                    nb_poss   := nb_poss + 1;
+                    avdernier := dernier;
+                    dernier   := val; --pour garder les 2 derniers
+                 end if;
+              end if;
             end loop;
 
-            -- rÈsoud les cases ‡ 1 possibilitÈ
-            if sudoku (ligne) (col).valeur = 0 and nb_poss = 1 then
+            -- r√©soud les cases √† 1 possibilit√©
+            if sudoku (ligne) (col).valeur = 0 and nb_poss = 1
+            then
                sudoku (ligne) (col).valeur  := dernier;
                evalue_possibilites;
-               depile; empile(sudoku); --met ‡ jour le sommet de la pile
-               changement := True; -- on a placÈ une valeur
+               depile; empile(sudoku); --met √† jour le sommet de la pile
+               changement := True; -- on a plac√© une valeur
                if debug then
                   affichage.une_alternative;
                   affichage.affiche_grille;
                   get_immediate(pause);
                   if pause='q' then raise exit_e; end if;
                end if;
-               exit boucle;
+               exit boucle; --sortie
             end if;
 
-            --depile lorsqu'on a tombe sur une impossibilitÈ
-            if sudoku (ligne) (col).valeur = 0 and nb_poss = 0 then
+            --depile lorsqu'on a tombe sur une impossibilit√©
+            if sudoku (ligne) (col).valeur = 0 and nb_poss = 0 
+            then
                depile;
                sudoku := sommet;
                if debug then
@@ -281,15 +314,16 @@ package body resolution is
                   if pause='q' then raise exit_e; end if;
                end if;
                changement := True; --on va essayer l'autre valeur
-               exit boucle;
+               exit boucle; --sortie
             end if;
 
-            --dÈpile le sommet et empile les 2 possibilitÈs (dernier et avdernier)
-            if sudoku(ligne)(col).valeur = 0 and nb_poss = 2 then
+            --d√©pile le sommet et empile les 2 possibilit√©s (dernier et avdernier)
+            if sudoku(ligne)(col).valeur = 0 and nb_poss = 2
+            then
                if index>0 then depile; end if; -- depile le sommet
 
                duplique;
-               sudoku (ligne) (col).valeur  := dernier;
+               sudoku (ligne) (col).valeur := dernier;
                evalue_possibilites;
                empile(sudoku);
                if debug then
@@ -300,7 +334,7 @@ package body resolution is
                end if;
 
                restaure; --besoin de dupliquer et restaurer car evalue_possibilites
-                         --peutavoir modifiÈ les cas possibles des autres cases.
+                         --peut avoir modifi√© les cas possibles des autres cases.
                sudoku (ligne) (col).valeur  := avdernier;
                evalue_possibilites;
                empile(sudoku);
@@ -316,16 +350,24 @@ package body resolution is
       end loop boucle;
    end resoud_possibilites;
 
+   -- -------------------------------------------------------
+   -- saisie d'une grille et tente sa r√©solution 
+   -- -------------------------------------------------------
    procedure resoud(debug_p : Boolean) is
    begin
-      debug := debug_p;
+
       init_grille;
-      if debug then affichage.affiche_grille; end if;
+
+      debug := debug_p;
+      if debug 
+      then affichage.affiche_grille;
+      end if;
+
       while (non_resolu) and changement and coup < 100000 loop
-         coup:=coup+1;
+         coup := coup + 1;
          changement := False;
          evalue_possibilites;
-         resoud_possibilites; --changement=True si on a placÈ au moins une valeur
+         resoud_possibilites; --changement=True si on a plac√© au moins une valeur
       end loop;
 
       if non_resolu then
@@ -339,9 +381,10 @@ package body resolution is
       Get(pause);
 
       Exception
-      when Pile_vide => put_line("ERREUR de pile vide !!!"); affichage.affiche_nb_poss; Get(pause); raise;
-      when Pile_pleine => put_line("ERREUR de pile pleine!!!"); affichage.affiche_nb_poss; Get(pause); raise;
-      when exit_e => raise;
-      when others => put_line("ERREUR !!!"); affichage.affiche_nb_poss; Get(pause); raise;
+       when Pile_vide => put_line("ERREUR de pile vide !!!"); affichage.affiche_nb_poss; Get(pause); raise;
+       when Pile_pleine => put_line("ERREUR de pile pleine!!!"); affichage.affiche_nb_poss; Get(pause); raise;
+       when exit_e => raise;
+       when others => put_line("ERREUR !!!"); affichage.affiche_nb_poss; Get(pause); raise;
    end resoud;
+
 end resolution;
