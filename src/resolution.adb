@@ -283,8 +283,8 @@ package body resolution is
                     avdernier := dernier;
                     dernier   := val; --pour garder les 2 derniers
                  end if;
-              end if;
-            end loop;
+              end loop;
+            end if;
 
             -- résoud les cases à 1 possibilité
             if sudoku (ligne) (col).valeur = 0 and nb_poss = 1
