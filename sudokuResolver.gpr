@@ -1,10 +1,13 @@
+--Project file
+--https://docs.adacore.com/gprbuild-docs/html/gprbuild_ug/gnat_project_manager.html#
+
 project sudokuResolver is
    
    for Languages use ("Ada");
    for Source_Dirs use ("src");
    for Main use ("sudokuresolver.adb");
    for Object_Dir use "Obj";
-   --for Exe_Dir use ".";
+   for Exec_Dir use ".";
 
    package Compiler is
       for Default_Switches ("ada") use ("-O1");
